@@ -1,0 +1,44 @@
+0x494d.c7c0:
+  ~[6 30]
+  2
+  0w4: {[%inc s=0v3 d=0v8] [%hop t=[args=~ there=0w3]]}
+  0w0: {[%mov s=0v1 d=0v7] [%mov s=0v0 d=0v5] [%hop t=[args=~ there=0wb]]}
+  0w3: {[%hop t=[args=~ there=0w2]]}
+  0w2: {[%hop t=[args=~ there=0w1]]}
+  0w1: {[%jmp a=0x494d.c7c0 v=~[0v8 0v2]]}
+  0w9: {[%eqq l=0v7 r=0v6 z=[args=~ there=0w7] o=[args=~ there=0w8]]}
+  0w6: {[%don s=0v4]}
+  0wa: {[%inc s=0v5 d=0v6] [%hop t=[args=~ there=0w9]]}
+  0w7: {[%mov s=0v0 d=0v4] [%hop t=[args=~ there=0w6]]}
+  0w5: {[%hop t=[args=~ there=0w4]]}
+  0wb: {[%hop t=[args=~ there=0wa]]}
+  0w8: {[%mov s=0v1 d=0v2] [%mov s=0v0 d=0v3] [%hop t=[args=~ there=0w5]]}
+0x2eba.5d91:
+  ~[6]
+  1
+  0w4: {[%hop t=[args=~[0v8] there=0w5]]}
+  0w0: {[%hop t=[args=~ there=0wo]]}
+  0wg: {[%hop t=[args=~ there=0wf]]}
+  0w3: {[%hop t=[args=~[0v9] there=0w5]]}
+  0w2: {[%hse n=%mean p=0v7] [%hop t=[args=~ there=0w1]]}
+  0w1: {[%don s=0v4]}
+  0w9: {[%hop t=[args=~ there=0w8]]}
+  0wc: {[%hop t=[args=~ there=0wb]]}
+  0wo: {[%imm n={2.663.495....} d=0v7] [%hop t=[args=~ there=0wn]]}
+  0w6: {[%mov s=0v3 d=0v8] [%hop t=[args=~ there=0w4]]}
+  0we: {[%hop t=[args=~ there=0wd]]}
+  0wn: {[%hsp n=%mean p=0v7] [%hop t=[args=~ there=0wm]]}
+  0wi: {[%eqq l=0v5 r=0v6 z=[args=~ there=0wg] o=[args=~ there=0wh]]}
+  0wa: {[%hop t=[args=~ there=0w9]]}
+  0wf: {[%bom o=[~ 0w3]]}
+  0wm: {[%mov s=0v0 d=0v6] [%hop t=[args=~ there=0wl]]}
+  0w7: {[%cal a=0x494d.c7c0 v=~[0v1 0v2] d=0v3] [%hop t=[args=~ there=0w6]]}
+  0wj: {[%imm n=0 d=0v5] [%hop t=[args=~ there=0wi]]}
+  0w5:   params: ~[0v4]
+{[%hop t=[args=~ there=0w2]]}
+  0wb: {[%hop t=[args=~ there=0wa]]}
+  0wd: {[%imm n=0 d=0v1] [%hop t=[args=~ there=0wc]]}
+  0wl: {[%hop t=[args=~ there=0wk]]}
+  0wk: {[%hop t=[args=~ there=0wj]]}
+  0w8: {[%hop t=[args=~ there=0w7]]}
+  0wh: {[%mov s=0v0 d=0v2] [%hop t=[args=~ there=0we]]}

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>IR CFG — out.txt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e;
+  --muted: #898781; --border: rgba(11,11,11,0.14);
+  --edge: #898781; --edge-z: #2a78d6; --edge-o: #eb6834;
+  --entry: #2a78d6; --chip: #f0efec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+    --muted: #898781; --border: rgba(255,255,255,0.16);
+    --edge: #898781; --edge-z: #3987e5; --edge-o: #d95926;
+    --entry: #3987e5; --chip: #262624;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+  --muted: #898781; --border: rgba(255,255,255,0.16);
+  --edge: #898781; --edge-z: #3987e5; --edge-o: #d95926;
+  --entry: #3987e5; --chip: #262624;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: none; padding: 24px 32px 64px; }
+h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+.sub { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+section { margin: 0 0 40px; }
+h2 {
+  font-size: 15px; font-weight: 600; margin: 0 0 2px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.meta { color: var(--ink-2); font-size: 13px; margin: 0 0 12px; }
+.meta code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+.canvas {
+  overflow-x: auto; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 8px;
+}
+.legend { display: flex; gap: 18px; align-items: center; margin: 10px 2px 0; color: var(--ink-2); font-size: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 18px; height: 0; border-top: 2px solid; display: inline-block; }
+.node rect { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.node-entry > rect { stroke: var(--entry); stroke-width: 1.5; }
+.node text { fill: var(--ink); }
+.node .hdr { fill: var(--muted); }
+.node .entry-tag { fill: var(--entry); font-weight: 600; }
+.opcode { font-weight: 600; }
+.op-params { fill: var(--ink-2); font-style: italic; }
+.op-params .opcode { fill: var(--muted); font-weight: 400; font-style: italic; }
+.op-exit .opcode { fill: var(--edge-z); }
+.op-branch .opcode { fill: var(--ink); }
+.fnlink { fill: var(--edge-z); text-decoration: underline; }
+.edge path { stroke-width: 1.5; }
+.edge-plain path { stroke: var(--edge); }
+.edge-z path { stroke: var(--edge-z); }
+.edge-o path { stroke: var(--edge-o); }
+.edge:hover path { stroke-width: 2.5; }
+.edge-chip { fill: var(--chip); stroke: var(--border); stroke-width: 0.5; }
+.edge-label { fill: var(--ink-2); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>IR control-flow graphs</h1>
+<p class="sub">out.txt · 2 functions · hop-chains merged</p>
+<section id="fn-494d-c7c0">
+<h2>0x494d.c7c0</h2>
+<p class="meta">2 args · argument slots <code>~[6 30]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 511 328" width="511" height="328" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M191.8 132.0 C 191.8 164.0, 98.4 164.0, 98.4 195.0" fill="none" marker-end="url(#arr-z)"/>
+<rect class="edge-chip" x="136.9" y="155.0" width="16.3" height="18" rx="4"/>
+<text class="edge-label" x="145.1" y="168.0" text-anchor="middle" font-size="11">z</text>
+</g>
+<g class="edge edge-o"><path d="M250.7 132.0 C 250.7 164.0, 344.0 164.0, 344.0 195.0" fill="none" marker-end="url(#arr-o)"/>
+<rect class="edge-chip" x="289.2" y="155.0" width="16.3" height="18" rx="4"/>
+<text class="edge-label" x="297.4" y="168.0" text-anchor="middle" font-size="11">o</text>
+</g>
+<g class="node node-entry">
+<rect x="95.0" y="28.0" width="252.5" height="104.0" rx="8"/>
+<text class="hdr" x="107.0" y="45.0" font-size="11">0w0 · 0wb · 0wa · 0w9</text>
+<text class="entry-tag" x="335.5" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="107.0" y="68.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1 d=0v7</text>
+<text class="op" x="107.0" y="85.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v0 d=0v5</text>
+<text class="op" x="107.0" y="102.0" font-size="12"><tspan class="opcode">%inc</tspan> s=0v5 d=0v6</text>
+<text class="op-branch" x="107.0" y="119.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0v7 r=0v6</text>
+</g>
+<g class="node">
+<rect x="28.0" y="196.0" width="140.8" height="70.0" rx="8"/>
+<text class="hdr" x="40.0" y="213.0" font-size="11">0w7 · 0w6</text>
+<text class="op" x="40.0" y="236.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v0 d=0v4</text>
+<text class="op-exit" x="40.0" y="253.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v4</text>
+</g>
+<g class="node">
+<rect x="204.8" y="196.0" width="278.5" height="104.0" rx="8"/>
+<text class="hdr" x="216.8" y="213.0" font-size="11">0w8 · 0w5 · 0w4 · 0w3 · 0w2 · 0w1</text>
+<text class="op" x="216.8" y="236.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1 d=0v2</text>
+<text class="op" x="216.8" y="253.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v0 d=0v3</text>
+<text class="op" x="216.8" y="270.0" font-size="12"><tspan class="opcode">%inc</tspan> s=0v3 d=0v8</text>
+<text class="op-exit" x="216.8" y="287.0" font-size="12"><tspan class="opcode">%jmp</tspan> a=<a href="#fn-494d-c7c0" class="fnlink">0x494d.c7c0</a> v=~[0v8 0v2]</text>
+</g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span></div>
+</section>
+<section id="fn-2eba-5d91">
+<h2>0x2eba.5d91</h2>
+<p class="meta">1 arg · argument slots <code>~[6]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 761 830" width="761" height="830" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-plain"><path d="M252.0 651.0 C 252.0 683.0, 270.9 683.0, 270.9 714.0" fill="none" marker-end="url(#arr)"/>
+<rect class="edge-chip" x="237.5" y="674.0" width="47.8" height="18" rx="4"/>
+<text class="edge-label" x="261.4" y="687.0" text-anchor="middle" font-size="11">~[0vb]</text>
+</g>
+<g class="edge edge-z"><path d="M481.4 149.0 C 481.4 181.0, 232.3 181.0, 232.3 212.0" fill="none" marker-end="url(#arr-z)"/>
+<rect class="edge-chip" x="348.7" y="172.0" width="16.3" height="18" rx="4"/>
+<text class="edge-label" x="356.9" y="185.0" text-anchor="middle" font-size="11">z</text>
+</g>
+<g class="edge edge-o"><path d="M576.7 149.0 C 576.7 181.0, 394.5 181.0, 394.5 212.0" fill="none" marker-end="url(#arr-o)"/>
+<rect class="edge-chip" x="477.5" y="172.0" width="16.3" height="18" rx="4"/>
+<text class="edge-label" x="485.6" y="185.0" text-anchor="middle" font-size="11">o</text>
+</g>
+<g class="edge edge-plain"><path d="M70.0 64.0 C 70.0 116.0, 233.2 663.0, 233.2 714.0" fill="none" marker-end="url(#arr)"/>
+<rect class="edge-chip" x="127.7" y="380.5" width="47.8" height="18" rx="4"/>
+<text class="edge-label" x="151.6" y="393.5" text-anchor="middle" font-size="11">~[0vc]</text>
+</g>
+<g class="edge edge-plain"><path d="M218.4 81.0 C 218.4 133.0, 242.2 563.0, 242.2 614.0" fill="none" marker-end="url(#arr)"/>
+</g>
+<g class="edge edge-z"><path d="M299.1 400.0 C 299.1 432.0, 165.9 432.0, 165.9 463.0" fill="none" marker-end="url(#arr-z)"/>
+<rect class="edge-chip" x="224.4" y="423.0" width="16.3" height="18" rx="4"/>
+<text class="edge-label" x="232.5" y="436.0" text-anchor="middle" font-size="11">z</text>
+</g>
+<g class="edge edge-o"><path d="M327.7 400.0 C 327.7 432.0, 460.9 432.0, 460.9 463.0" fill="none" marker-end="url(#arr-o)"/>
+<rect class="edge-chip" x="386.2" y="423.0" width="16.3" height="18" rx="4"/>
+<text class="edge-label" x="394.3" y="436.0" text-anchor="middle" font-size="11">o</text>
+</g>
+<g class="edge edge-plain"><path d="M394.5 266.0 C 394.5 298.0, 327.7 298.0, 327.7 329.0" fill="none" marker-end="url(#arr)"/>
+<rect class="edge-chip" x="337.2" y="289.0" width="47.8" height="18" rx="4"/>
+<text class="edge-label" x="361.1" y="302.0" text-anchor="middle" font-size="11">~[0v5]</text>
+</g>
+<g class="edge edge-plain"><path d="M232.3 266.0 C 232.3 298.0, 299.1 298.0, 299.1 329.0" fill="none" marker-end="url(#arr)"/>
+<rect class="edge-chip" x="241.8" y="289.0" width="47.8" height="18" rx="4"/>
+<text class="edge-label" x="265.7" y="302.0" text-anchor="middle" font-size="11">~[0v6]</text>
+</g>
+<g class="edge edge-plain"><path d="M460.9 551.0 C 460.9 583.0, 261.8 583.0, 261.8 614.0" fill="none" marker-end="url(#arr)"/>
+</g>
+<g class="node">
+<rect x="210.0" y="615.0" width="84.0" height="36.0" rx="8"/>
+<text class="hdr" x="222.0" y="632.0" font-size="11">0w4</text>
+</g>
+<g class="node node-entry">
+<rect x="324.8" y="28.0" width="408.5" height="121.0" rx="8"/>
+<text class="hdr" x="336.8" y="45.0" font-size="11">0w0 · 0ws · 0wr · 0wq · 0wp · 0wo · 0wn · 0wm</text>
+<text class="entry-tag" x="721.3" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="336.8" y="68.0" font-size="12"><tspan class="opcode">%imm</tspan> n={2.663.495....} d=0v4</text>
+<text class="op" x="336.8" y="85.0" font-size="12"><tspan class="opcode">%hsp</tspan> n=%mean p=0v4</text>
+<text class="op" x="336.8" y="102.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v0 d=0v2</text>
+<text class="op" x="336.8" y="119.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0va</text>
+<text class="op-branch" x="336.8" y="136.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0va r=0v2</text>
+</g>
+<g class="node">
+<rect x="104.7" y="464.0" width="122.5" height="53.0" rx="8"/>
+<text class="hdr" x="116.7" y="481.0" font-size="11">0wg · 0wf</text>
+<text class="op-exit" x="116.7" y="504.0" font-size="12"><tspan class="opcode">%bom</tspan> </text>
+</g>
+<g class="node">
+<rect x="28.0" y="28.0" width="84.0" height="36.0" rx="8"/>
+<text class="hdr" x="40.0" y="45.0" font-size="11">0w3</text>
+</g>
+<g class="node">
+<rect x="148.0" y="28.0" width="140.8" height="53.0" rx="8"/>
+<text class="hdr" x="160.0" y="45.0" font-size="11">0w6</text>
+<text class="op" x="160.0" y="68.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v7 d=0vb</text>
+</g>
+<g class="node">
+<rect x="252.2" y="330.0" width="122.5" height="70.0" rx="8"/>
+<text class="hdr" x="264.2" y="347.0" font-size="11">0wj · 0wi</text>
+<text class="op-params" x="264.2" y="370.0" font-size="12"><tspan class="opcode">params</tspan> ~[0v9]</text>
+<text class="op-branch" x="264.2" y="387.0" font-size="12"><tspan class="opcode">%brn</tspan> s=0v9</text>
+</g>
+<g class="node">
+<rect x="171.3" y="715.0" width="161.5" height="87.0" rx="8"/>
+<text class="hdr" x="183.3" y="732.0" font-size="11">0w5 · 0w2 · 0w1</text>
+<text class="op-params" x="183.3" y="755.0" font-size="12"><tspan class="opcode">params</tspan> ~[0v8]</text>
+<text class="op" x="183.3" y="772.0" font-size="12"><tspan class="opcode">%hse</tspan> n=%mean p=0v4</text>
+<text class="op-exit" x="183.3" y="789.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v8</text>
+</g>
+<g class="node">
+<rect x="331.4" y="213.0" width="126.2" height="53.0" rx="8"/>
+<text class="hdr" x="343.4" y="230.0" font-size="11">0wl</text>
+<text class="op" x="343.4" y="253.0" font-size="12"><tspan class="opcode">%imm</tspan> n=1 d=0v5</text>
+</g>
+<g class="node">
+<rect x="169.2" y="213.0" width="126.2" height="53.0" rx="8"/>
+<text class="hdr" x="181.2" y="230.0" font-size="11">0wk</text>
+<text class="op" x="181.2" y="253.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0v6</text>
+</g>
+<g class="node">
+<rect x="263.2" y="464.0" width="395.5" height="87.0" rx="8"/>
+<text class="hdr" x="275.2" y="481.0" font-size="11">0wh · 0we · 0wd · 0wc · 0wb · 0wa · 0w9 · 0w8 · 0w7</text>
+<text class="op" x="275.2" y="504.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v0 d=0v3</text>
+<text class="op" x="275.2" y="521.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0v1</text>
+<text class="op" x="275.2" y="538.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-494d-c7c0" class="fnlink">0x494d.c7c0</a> v=~[0v1 0v3] d=0v7</text>
+</g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span></div>
+</section>
+</main>
+</body>
+</html>
