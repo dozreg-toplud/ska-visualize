@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>IR CFG — out.txt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e;
+  --muted: #898781; --border: rgba(11,11,11,0.14);
+  --edge: #898781; --edge-z: #2a78d6; --edge-o: #eb6834;
+  --entry: #2a78d6; --chip: #f0efec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+    --muted: #898781; --border: rgba(255,255,255,0.16);
+    --edge: #898781; --edge-z: #3987e5; --edge-o: #d95926;
+    --entry: #3987e5; --chip: #262624;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+  --muted: #898781; --border: rgba(255,255,255,0.16);
+  --edge: #898781; --edge-z: #3987e5; --edge-o: #d95926;
+  --entry: #3987e5; --chip: #262624;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: none; padding: 24px 32px 64px; }
+h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+.sub { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+section { margin: 0 0 40px; }
+h2 {
+  font-size: 15px; font-weight: 600; margin: 0 0 2px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.meta { color: var(--ink-2); font-size: 13px; margin: 0 0 12px; }
+.meta code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+.canvas {
+  overflow-x: auto; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 8px;
+}
+.legend { display: flex; gap: 18px; align-items: center; margin: 10px 2px 0; color: var(--ink-2); font-size: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 18px; height: 0; border-top: 2px solid; display: inline-block; }
+.node rect { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.node-entry > rect { stroke: var(--entry); stroke-width: 1.5; }
+.node text { fill: var(--ink); }
+.node .hdr { fill: var(--muted); }
+.node .entry-tag { fill: var(--entry); font-weight: 600; }
+.opcode { font-weight: 600; }
+.op-params { fill: var(--ink-2); font-style: italic; }
+.op-params .opcode { fill: var(--muted); font-weight: 400; font-style: italic; }
+.op-exit .opcode { fill: var(--edge-z); }
+.op-branch .opcode { fill: var(--ink); }
+.fnlink { fill: var(--edge-z); text-decoration: underline; }
+.edge path { stroke-width: 1.5; }
+.edge-plain path { stroke: var(--edge); }
+.edge-z path { stroke: var(--edge-z); }
+.edge-o path { stroke: var(--edge-o); }
+.edge-bom { opacity: 0.55; }
+.edge-bom path { stroke: var(--edge); stroke-dasharray: 5 4; }
+.edge:hover path { stroke-width: 2.5; }
+.edge-bom:hover { opacity: 1; }
+.edge-chip { fill: var(--chip); stroke: var(--border); stroke-width: 0.5; }
+.edge-label { fill: var(--ink-2); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>IR control-flow graphs</h1>
+<p class="sub">out.txt · 2 functions · hop-chains merged</p>
+<section id="fn-2a0c-d7aa pessimistic">
+<h2>0x2a0c.d7aa pessimistic</h2>
+<p class="meta">1 arg · argument slots <code>~[1]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 724 2043" width="724" height="2043" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M319.1 1458.0 C 319.1 1489.5, 263.5 1489.5, 263.5 1521.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M405.4 1458.0 C 405.4 1489.5, 461.0 1489.5, 461.0 1521.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="edge edge-plain"><path d="M461.0 1575.0 C 461.0 1606.5, 440.2 1606.5, 440.2 1638.0" fill="none" marker-end="url(#arr)"/></g>
+<g class="edge edge-plain"><path d="M263.5 1575.0 C 263.5 1606.5, 284.3 1606.5, 284.3 1638.0" fill="none" marker-end="url(#arr)"/></g>
+<g class="node node-entry">
+<rect x="177.5" y="28.0" width="369.5" height="1430.0" rx="8"/>
+<text class="hdr" x="189.5" y="45.0" font-size="11">0w0 · 0ws · 0wr · 0wq · 0wp · 0wo · 0wn</text>
+<text class="entry-tag" x="535.0" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="189.5" y="68.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v0 d=0vo</text>
+<text class="op" x="189.5" y="85.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0vo</text>
+<text class="op" x="189.5" y="102.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0vo d=0vp</text>
+<text class="op" x="189.5" y="119.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vp d=0vq</text>
+<text class="op" x="189.5" y="136.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0vq</text>
+<text class="op" x="189.5" y="153.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0vq d=0vr</text>
+<text class="op" x="189.5" y="170.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vr d=0vs</text>
+<text class="op" x="189.5" y="187.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0vs</text>
+<text class="op" x="189.5" y="204.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0vs d=0vt</text>
+<text class="op" x="189.5" y="221.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vt d=0vu</text>
+<text class="op" x="189.5" y="238.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0vu</text>
+<text class="op" x="189.5" y="255.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0vu d=0vv</text>
+<text class="op" x="189.5" y="272.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vv d=0v10</text>
+<text class="op" x="189.5" y="289.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v10</text>
+<text class="op" x="189.5" y="306.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v10 d=0v11</text>
+<text class="op" x="189.5" y="323.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v11 d=0v12</text>
+<text class="op" x="189.5" y="340.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v12</text>
+<text class="op" x="189.5" y="357.0" font-size="12"><tspan class="opcode">%hed</tspan> s=0v12 d=0v13</text>
+<text class="op" x="189.5" y="374.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v13 d=0v14</text>
+<text class="op" x="189.5" y="391.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v14</text>
+<text class="op" x="189.5" y="408.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v14 d=0v15</text>
+<text class="op" x="189.5" y="425.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v15 d=0v16</text>
+<text class="op" x="189.5" y="442.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v16</text>
+<text class="op" x="189.5" y="459.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v16 d=0v17</text>
+<text class="op" x="189.5" y="476.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v17 d=0v18</text>
+<text class="op" x="189.5" y="493.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v18</text>
+<text class="op" x="189.5" y="510.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v18 d=0v19</text>
+<text class="op" x="189.5" y="527.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v19 d=0v1a</text>
+<text class="op" x="189.5" y="544.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1a</text>
+<text class="op" x="189.5" y="561.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1a d=0v1b</text>
+<text class="op" x="189.5" y="578.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1b d=0v1c</text>
+<text class="op" x="189.5" y="595.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1c</text>
+<text class="op" x="189.5" y="612.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1c d=0v1d</text>
+<text class="op" x="189.5" y="629.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1d d=0v1e</text>
+<text class="op" x="189.5" y="646.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1e</text>
+<text class="op" x="189.5" y="663.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1e d=0v1f</text>
+<text class="op" x="189.5" y="680.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1f d=0v1g</text>
+<text class="op" x="189.5" y="697.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1g</text>
+<text class="op" x="189.5" y="714.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1g d=0v1h</text>
+<text class="op" x="189.5" y="731.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1h d=0v1i</text>
+<text class="op" x="189.5" y="748.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1i</text>
+<text class="op" x="189.5" y="765.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1i d=0v1j</text>
+<text class="op" x="189.5" y="782.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1j d=0v1k</text>
+<text class="op" x="189.5" y="799.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1k</text>
+<text class="op" x="189.5" y="816.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1k d=0v1l</text>
+<text class="op" x="189.5" y="833.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1l d=0v1m</text>
+<text class="op" x="189.5" y="850.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1m</text>
+<text class="op" x="189.5" y="867.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1m d=0v1n</text>
+<text class="op" x="189.5" y="884.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1n d=0v1o</text>
+<text class="op" x="189.5" y="901.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1o</text>
+<text class="op" x="189.5" y="918.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1o d=0v1p</text>
+<text class="op" x="189.5" y="935.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1p d=0v1q</text>
+<text class="op" x="189.5" y="952.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1q</text>
+<text class="op" x="189.5" y="969.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1q d=0v1r</text>
+<text class="op" x="189.5" y="986.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1r d=0v1s</text>
+<text class="op" x="189.5" y="1003.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1s</text>
+<text class="op" x="189.5" y="1020.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1s d=0v1t</text>
+<text class="op" x="189.5" y="1037.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1t d=0v1u</text>
+<text class="op" x="189.5" y="1054.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v1u</text>
+<text class="op" x="189.5" y="1071.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v1u d=0v1v</text>
+<text class="op" x="189.5" y="1088.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1v d=0v20</text>
+<text class="op" x="189.5" y="1105.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v20</text>
+<text class="op" x="189.5" y="1122.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v20 d=0v21</text>
+<text class="op" x="189.5" y="1139.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v21 d=0v9</text>
+<text class="op" x="189.5" y="1156.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v9</text>
+<text class="op" x="189.5" y="1173.0" font-size="12"><tspan class="opcode">%hed</tspan> s=0v9 d=0v22</text>
+<text class="op" x="189.5" y="1190.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v22 d=0v23</text>
+<text class="op" x="189.5" y="1207.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v23</text>
+<text class="op" x="189.5" y="1224.0" font-size="12"><tspan class="opcode">%hed</tspan> s=0v23 d=0v24</text>
+<text class="op" x="189.5" y="1241.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v24 d=0v25</text>
+<text class="op" x="189.5" y="1258.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v25</text>
+<text class="op" x="189.5" y="1275.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v25 d=0v26</text>
+<text class="op" x="189.5" y="1292.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v26 d=0v27</text>
+<text class="op" x="189.5" y="1309.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v27</text>
+<text class="op" x="189.5" y="1326.0" font-size="12"><tspan class="opcode">%hed</tspan> s=0v27 d=0v28</text>
+<text class="op" x="189.5" y="1343.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v28 d=0v29</text>
+<text class="op" x="189.5" y="1360.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v29</text>
+<text class="op" x="189.5" y="1377.0" font-size="12"><tspan class="opcode">%hed</tspan> s=0v29 d=0v2a</text>
+<text class="op" x="189.5" y="1394.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v2a d=0vh</text>
+<text class="op" x="189.5" y="1411.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0vj</text>
+<text class="op" x="189.5" y="1428.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0vi</text>
+<text class="op-branch" x="189.5" y="1445.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0vj r=0vi</text>
+</g>
+<g class="node">
+<rect x="28.0" y="1639.0" width="668.5" height="376.0" rx="8"/>
+<text class="hdr" x="40.0" y="1656.0" font-size="11">0wi · 0wf · 0we · 0wd · 0wc · 0wb · 0wa · 0w9 · 0w8 · 0w7 · 0w6 · 0w5 · 0w4 · 0w3 · 0w2 · 0w1</text>
+<text class="op-params" x="40.0" y="1679.0" font-size="12"><tspan class="opcode">params</tspan> ~[0vk]</text>
+<text class="op" x="40.0" y="1696.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v9 d=0va</text>
+<text class="op" x="40.0" y="1713.0" font-size="12"><tspan class="opcode">%nok</tspan> u=0va f=0vh d=0v1</text>
+<text class="op" x="40.0" y="1730.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1 d=0v2</text>
+<text class="op" x="40.0" y="1747.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v2</text>
+<text class="op" x="40.0" y="1764.0" font-size="12"><tspan class="opcode">%hed</tspan> s=0v2 d=0v3</text>
+<text class="op" x="40.0" y="1781.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v3 d=0v4</text>
+<text class="op" x="40.0" y="1798.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v2 d=0v5</text>
+<text class="op" x="40.0" y="1815.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v5 d=0v6</text>
+<text class="op" x="40.0" y="1832.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v6</text>
+<text class="op" x="40.0" y="1849.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v6 d=0v7</text>
+<text class="op" x="40.0" y="1866.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v7 d=0v8</text>
+<text class="op" x="40.0" y="1883.0" font-size="12"><tspan class="opcode">%imm</tspan> n=1 d=0vd</text>
+<text class="op" x="40.0" y="1900.0" font-size="12"><tspan class="opcode">%con</tspan> h=0vk t=0vd d=0ve</text>
+<text class="op" x="40.0" y="1917.0" font-size="12"><tspan class="opcode">%con</tspan> h=0ve t=0v8 d=0vf</text>
+<text class="op" x="40.0" y="1934.0" font-size="12"><tspan class="opcode">%con</tspan> h=0v4 t=0vf d=0vg</text>
+<text class="op" x="40.0" y="1951.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vg d=0vn</text>
+<text class="op" x="40.0" y="1968.0" font-size="12"><tspan class="opcode">%nok</tspan> u=0vn f=0v4 d=0vl</text>
+<text class="op" x="40.0" y="1985.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vl d=0vm</text>
+<text class="op-exit" x="40.0" y="2002.0" font-size="12"><tspan class="opcode">%don</tspan> s=0vm</text>
+</g>
+<g class="node">
+<rect x="380.2" y="1522.0" width="161.5" height="53.0" rx="8"/>
+<text class="hdr" x="392.2" y="1539.0" font-size="11">0wm · 0wj · 0wh</text>
+<text class="op" x="392.2" y="1562.0" font-size="12"><tspan class="opcode">%imm</tspan> n=43 d=0vb</text>
+</g>
+<g class="node">
+<rect x="182.8" y="1522.0" width="161.5" height="53.0" rx="8"/>
+<text class="hdr" x="194.8" y="1539.0" font-size="11">0wl · 0wk · 0wg</text>
+<text class="op" x="194.8" y="1562.0" font-size="12"><tspan class="opcode">%imm</tspan> n=42 d=0vc</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="255.3" y="1493.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="263.5" y="1506.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="452.9" y="1493.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="461.0" y="1506.0" text-anchor="middle" font-size="11">o</text></g>
+<g class="edge edge-plain"><rect class="edge-chip" x="416.3" y="1610.0" width="47.8" height="18" rx="4"/><text class="edge-label" x="440.2" y="1623.0" text-anchor="middle" font-size="11">~[0vb]</text></g>
+<g class="edge edge-plain"><rect class="edge-chip" x="260.4" y="1588.0" width="47.8" height="18" rx="4"/><text class="edge-label" x="284.3" y="1601.0" text-anchor="middle" font-size="11">~[0vc]</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-2a0c-d7aa">
+<h2>0x2a0c.d7aa</h2>
+<p class="meta">2 args · argument slots <code>~[4.161.535 133.169.124]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 724 734" width="724" height="734" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M323.7 149.0 C 323.7 180.5, 263.5 180.5, 263.5 212.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M400.8 149.0 C 400.8 180.5, 461.0 180.5, 461.0 212.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="edge edge-plain"><path d="M461.0 266.0 C 461.0 297.5, 440.2 297.5, 440.2 329.0" fill="none" marker-end="url(#arr)"/></g>
+<g class="edge edge-plain"><path d="M263.5 266.0 C 263.5 297.5, 284.3 297.5, 284.3 329.0" fill="none" marker-end="url(#arr)"/></g>
+<g class="node node-entry">
+<rect x="197.0" y="28.0" width="330.5" height="121.0" rx="8"/>
+<text class="hdr" x="209.0" y="45.0" font-size="11">0w0 · 0wr · 0wq · 0wp · 0wo · 0wn</text>
+<text class="entry-tag" x="515.5" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="209.0" y="68.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v1 d=0vi</text>
+<text class="op" x="209.0" y="85.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v0 d=0va</text>
+<text class="op" x="209.0" y="102.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0vk</text>
+<text class="op" x="209.0" y="119.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0vj</text>
+<text class="op-branch" x="209.0" y="136.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0vk r=0vj</text>
+</g>
+<g class="node">
+<rect x="28.0" y="330.0" width="668.5" height="376.0" rx="8"/>
+<text class="hdr" x="40.0" y="347.0" font-size="11">0wi · 0wf · 0we · 0wd · 0wc · 0wb · 0wa · 0w9 · 0w8 · 0w7 · 0w6 · 0w5 · 0w4 · 0w3 · 0w2 · 0w1</text>
+<text class="op-params" x="40.0" y="370.0" font-size="12"><tspan class="opcode">params</tspan> ~[0vl]</text>
+<text class="op" x="40.0" y="387.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0va d=0vb</text>
+<text class="op" x="40.0" y="404.0" font-size="12"><tspan class="opcode">%nok</tspan> u=0vb f=0vi d=0v2</text>
+<text class="op" x="40.0" y="421.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v2 d=0v3</text>
+<text class="op" x="40.0" y="438.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v3</text>
+<text class="op" x="40.0" y="455.0" font-size="12"><tspan class="opcode">%hed</tspan> s=0v3 d=0v4</text>
+<text class="op" x="40.0" y="472.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v4 d=0v5</text>
+<text class="op" x="40.0" y="489.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v3 d=0v6</text>
+<text class="op" x="40.0" y="506.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v6 d=0v7</text>
+<text class="op" x="40.0" y="523.0" font-size="12"><tspan class="opcode">%cel</tspan> p=0v7</text>
+<text class="op" x="40.0" y="540.0" font-size="12"><tspan class="opcode">%tal</tspan> s=0v7 d=0v8</text>
+<text class="op" x="40.0" y="557.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0v8 d=0v9</text>
+<text class="op" x="40.0" y="574.0" font-size="12"><tspan class="opcode">%imm</tspan> n=1 d=0ve</text>
+<text class="op" x="40.0" y="591.0" font-size="12"><tspan class="opcode">%con</tspan> h=0vl t=0ve d=0vf</text>
+<text class="op" x="40.0" y="608.0" font-size="12"><tspan class="opcode">%con</tspan> h=0vf t=0v9 d=0vg</text>
+<text class="op" x="40.0" y="625.0" font-size="12"><tspan class="opcode">%con</tspan> h=0v5 t=0vg d=0vh</text>
+<text class="op" x="40.0" y="642.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vh d=0vo</text>
+<text class="op" x="40.0" y="659.0" font-size="12"><tspan class="opcode">%nok</tspan> u=0vo f=0v5 d=0vm</text>
+<text class="op" x="40.0" y="676.0" font-size="12"><tspan class="opcode">%mov</tspan> s=0vm d=0vn</text>
+<text class="op-exit" x="40.0" y="693.0" font-size="12"><tspan class="opcode">%don</tspan> s=0vn</text>
+</g>
+<g class="node">
+<rect x="380.2" y="213.0" width="161.5" height="53.0" rx="8"/>
+<text class="hdr" x="392.2" y="230.0" font-size="11">0wm · 0wj · 0wh</text>
+<text class="op" x="392.2" y="253.0" font-size="12"><tspan class="opcode">%imm</tspan> n=43 d=0vc</text>
+</g>
+<g class="node">
+<rect x="182.8" y="213.0" width="161.5" height="53.0" rx="8"/>
+<text class="hdr" x="194.8" y="230.0" font-size="11">0wl · 0wk · 0wg</text>
+<text class="op" x="194.8" y="253.0" font-size="12"><tspan class="opcode">%imm</tspan> n=42 d=0vd</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="255.3" y="184.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="263.5" y="197.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="452.9" y="184.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="461.0" y="197.0" text-anchor="middle" font-size="11">o</text></g>
+<g class="edge edge-plain"><rect class="edge-chip" x="416.3" y="301.0" width="47.8" height="18" rx="4"/><text class="edge-label" x="440.2" y="314.0" text-anchor="middle" font-size="11">~[0vc]</text></g>
+<g class="edge edge-plain"><rect class="edge-chip" x="260.4" y="279.0" width="47.8" height="18" rx="4"/><text class="edge-label" x="284.3" y="292.0" text-anchor="middle" font-size="11">~[0vd]</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>IR CFG — out.txt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e;
+  --muted: #898781; --border: rgba(11,11,11,0.14);
+  --edge: #898781; --edge-z: #2a78d6; --edge-o: #eb6834;
+  --entry: #2a78d6; --chip: #f0efec;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+    --muted: #898781; --border: rgba(255,255,255,0.16);
+    --edge: #898781; --edge-z: #3987e5; --edge-o: #d95926;
+    --entry: #3987e5; --chip: #262624;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+  --muted: #898781; --border: rgba(255,255,255,0.16);
+  --edge: #898781; --edge-z: #3987e5; --edge-o: #d95926;
+  --entry: #3987e5; --chip: #262624;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: none; padding: 24px 32px 64px; }
+h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+.sub { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+section { margin: 0 0 40px; }
+h2 {
+  font-size: 15px; font-weight: 600; margin: 0 0 2px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.meta { color: var(--ink-2); font-size: 13px; margin: 0 0 12px; }
+.meta code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }
+.canvas {
+  overflow-x: auto; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 8px;
+}
+.legend { display: flex; gap: 18px; align-items: center; margin: 10px 2px 0; color: var(--ink-2); font-size: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch { width: 18px; height: 0; border-top: 2px solid; display: inline-block; }
+.node rect { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.node-entry > rect { stroke: var(--entry); stroke-width: 1.5; }
+.node text { fill: var(--ink); }
+.node .hdr { fill: var(--muted); }
+.node .entry-tag { fill: var(--entry); font-weight: 600; }
+.opcode { font-weight: 600; }
+.op-params { fill: var(--ink-2); font-style: italic; }
+.op-params .opcode { fill: var(--muted); font-weight: 400; font-style: italic; }
+.op-exit .opcode { fill: var(--edge-z); }
+.op-branch .opcode { fill: var(--ink); }
+.fnlink { fill: var(--edge-z); text-decoration: underline; }
+.edge path { stroke-width: 1.5; }
+.edge-plain path { stroke: var(--edge); }
+.edge-z path { stroke: var(--edge-z); }
+.edge-o path { stroke: var(--edge-o); }
+.edge-bom { opacity: 0.55; }
+.edge-bom path { stroke: var(--edge); stroke-dasharray: 5 4; }
+.edge:hover path { stroke-width: 2.5; }
+.edge-bom:hover { opacity: 1; }
+.edge-chip { fill: var(--chip); stroke: var(--border); stroke-width: 0.5; }
+.edge-label { fill: var(--ink-2); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>IR control-flow graphs</h1>
+<p class="sub">out.txt · 8 functions · hop-chains merged</p>
+<section id="fn-4d6a-4473 pessimistic">
+<h2>0x4d6a.4473 pessimistic</h2>
+<p class="meta">1 arg · argument slots <code>~[1]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 445 194" width="445" height="194" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="node node-entry">
+<rect x="28.0" y="28.0" width="389.0" height="138.0" rx="8"/>
+<text class="hdr" x="40.0" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="405.0" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="40.0" y="68.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [13 3] 17 12] d=0v1</text>
+<text class="op" x="40.0" y="85.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v1</text>
+<text class="op" x="40.0" y="102.0" font-size="12"><tspan class="opcode">%imm</tspan> n=42 d=0v2</text>
+<text class="op" x="40.0" y="119.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-3dfa-cf19" class="fnlink">0x3dfa.cf19</a> v=~[0v2] d=0v3</text>
+<text class="op" x="40.0" y="136.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v1</text>
+<text class="op-exit" x="40.0" y="153.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v3</text>
+</g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-7ab8-ed5c">
+<h2>0x7ab8.ed5c</h2>
+<p class="meta">2 args · argument slots <code>~[12 13]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 454 277" width="454" height="277" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M168.5 98.0 C 168.5 129.5, 76.5 129.5, 76.5 161.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M201.4 98.0 C 201.4 129.5, 293.4 129.5, 293.4 161.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="node node-entry">
+<rect x="114.6" y="28.0" width="140.8" height="70.0" rx="8"/>
+<text class="hdr" x="126.6" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="243.4" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="126.6" y="68.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0v2</text>
+<text class="op-branch" x="126.6" y="85.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0v2 r=0v0</text>
+</g>
+<g class="node">
+<rect x="161.0" y="162.0" width="264.9" height="87.0" rx="8"/>
+<text class="hdr" x="173.0" y="179.0" font-size="11">0wn</text>
+<text class="op" x="173.0" y="202.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-2eba-5d91" class="fnlink">0x2eba.5d91</a> v=~[0v0] d=0v3</text>
+<text class="op" x="173.0" y="219.0" font-size="12"><tspan class="opcode">%inc</tspan> s=0v1 d=0v4</text>
+<text class="op-exit" x="173.0" y="236.0" font-size="12"><tspan class="opcode">%jmp</tspan> a=<a href="#fn-7ab8-ed5c" class="fnlink">0x7ab8.ed5c</a> v=~[0v3 0v4]</text>
+</g>
+<g class="node">
+<rect x="28.0" y="162.0" width="97.0" height="53.0" rx="8"/>
+<text class="hdr" x="40.0" y="179.0" font-size="11">0wm</text>
+<text class="op-exit" x="40.0" y="202.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v1</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="68.3" y="133.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="76.5" y="146.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="285.3" y="133.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="293.4" y="146.0" text-anchor="middle" font-size="11">o</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-5f3d-fa84">
+<h2>0x5f3d.fa84</h2>
+<p class="meta">2 args · argument slots <code>~[28 29]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 511 545" width="511" height="545" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M142.6 98.0 C 142.6 129.5, 76.5 129.5, 76.5 161.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M175.4 98.0 C 175.4 129.5, 241.5 129.5, 241.5 161.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="edge edge-z"><path d="M369.8 383.0 C 369.8 414.5, 352.2 414.5, 352.2 446.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M301.2 383.0 C 301.2 414.5, 219.3 414.5, 219.3 446.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="edge edge-z"><path d="M225.1 215.0 C 225.1 247.0, 147.5 247.0, 147.5 279.0 L 147.5 383.0 C 147.5 414.5, 189.9 414.5, 189.9 446.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M257.9 215.0 C 257.9 246.5, 335.5 246.5, 335.5 278.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="node">
+<rect x="141.5" y="447.0" width="126.2" height="70.0" rx="8"/>
+<text class="hdr" x="153.5" y="464.0" font-size="11">0w4</text>
+<text class="op" x="153.5" y="487.0" font-size="12"><tspan class="opcode">%imm</tspan> n=1 d=0v6</text>
+<text class="op-exit" x="153.5" y="504.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v6</text>
+</g>
+<g class="node node-entry">
+<rect x="88.6" y="28.0" width="140.8" height="70.0" rx="8"/>
+<text class="hdr" x="100.6" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="217.4" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="100.6" y="68.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0v2</text>
+<text class="op-branch" x="100.6" y="85.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0v2 r=0v0</text>
+</g>
+<g class="node">
+<rect x="188.5" y="279.0" width="294.1" height="104.0" rx="8"/>
+<text class="hdr" x="200.5" y="296.0" font-size="11">0wJ</text>
+<text class="op" x="200.5" y="319.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-2eba-5d91" class="fnlink">0x2eba.5d91</a> v=~[0v0] d=0v3</text>
+<text class="op" x="200.5" y="336.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-2eba-5d91" class="fnlink">0x2eba.5d91</a> v=~[0v1] d=0v4</text>
+<text class="op" x="200.5" y="353.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-5f3d-fa84" class="fnlink">0x5f3d.fa84</a> v=~[0v3 0v4] d=0v5</text>
+<text class="op-branch" x="200.5" y="370.0" font-size="12"><tspan class="opcode">%brn</tspan> s=0v5</text>
+</g>
+<g class="node">
+<rect x="303.7" y="447.0" width="97.0" height="53.0" rx="8"/>
+<text class="hdr" x="315.7" y="464.0" font-size="11">0w5</text>
+<text class="op-exit" x="315.7" y="487.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v2</text>
+</g>
+<g class="node">
+<rect x="171.1" y="162.0" width="140.8" height="53.0" rx="8"/>
+<text class="hdr" x="183.1" y="179.0" font-size="11">0wS</text>
+<text class="op-branch" x="183.1" y="202.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0v2 r=0v1</text>
+</g>
+<g class="node">
+<rect x="28.0" y="162.0" width="97.0" height="53.0" rx="8"/>
+<text class="hdr" x="40.0" y="179.0" font-size="11">0wR</text>
+<text class="op-exit" x="40.0" y="202.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v2</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="68.3" y="133.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="76.5" y="146.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="233.4" y="133.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="241.5" y="146.0" text-anchor="middle" font-size="11">o</text></g>
+<g class="edge edge-z"><rect class="edge-chip" x="344.1" y="418.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="352.2" y="431.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="211.2" y="418.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="219.3" y="431.0" text-anchor="middle" font-size="11">o</text></g>
+<g class="edge edge-z"><rect class="edge-chip" x="181.7" y="396.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="189.9" y="409.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="327.4" y="250.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="335.5" y="263.0" text-anchor="middle" font-size="11">o</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-4d6a-4473">
+<h2>0x4d6a.4473</h2>
+<p class="meta">0 args · argument slots <code>~</code></p>
+<div class="canvas">
+<svg viewBox="0 0 445 194" width="445" height="194" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="node node-entry">
+<rect x="28.0" y="28.0" width="389.0" height="138.0" rx="8"/>
+<text class="hdr" x="40.0" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="405.0" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="40.0" y="68.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [13 3] 17 12] d=0v0</text>
+<text class="op" x="40.0" y="85.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v0</text>
+<text class="op" x="40.0" y="102.0" font-size="12"><tspan class="opcode">%imm</tspan> n=42 d=0v1</text>
+<text class="op" x="40.0" y="119.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-3dfa-cf19" class="fnlink">0x3dfa.cf19</a> v=~[0v1] d=0v2</text>
+<text class="op" x="40.0" y="136.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v0</text>
+<text class="op-exit" x="40.0" y="153.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v2</text>
+</g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-494d-c7c0">
+<h2>0x494d.c7c0</h2>
+<p class="meta">2 args · argument slots <code>~[6 30]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 439 243" width="439" height="243" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M164.9 98.0 C 164.9 129.5, 76.5 129.5, 76.5 161.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M197.8 98.0 C 197.8 129.5, 286.2 129.5, 286.2 161.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="node node-entry">
+<rect x="110.9" y="28.0" width="140.8" height="70.0" rx="8"/>
+<text class="hdr" x="122.9" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="239.7" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="122.9" y="68.0" font-size="12"><tspan class="opcode">%inc</tspan> s=0v0 d=0v2</text>
+<text class="op-branch" x="122.9" y="85.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0v1 r=0v2</text>
+</g>
+<g class="node">
+<rect x="28.0" y="162.0" width="97.0" height="53.0" rx="8"/>
+<text class="hdr" x="40.0" y="179.0" font-size="11">0w7</text>
+<text class="op-exit" x="40.0" y="202.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v0</text>
+</g>
+<g class="node">
+<rect x="161.0" y="162.0" width="250.3" height="53.0" rx="8"/>
+<text class="hdr" x="173.0" y="179.0" font-size="11">0w8</text>
+<text class="op-exit" x="173.0" y="202.0" font-size="12"><tspan class="opcode">%jmp</tspan> a=<a href="#fn-494d-c7c0" class="fnlink">0x494d.c7c0</a> v=~[0v2 0v1]</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="68.3" y="133.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="76.5" y="146.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="278.0" y="133.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="286.2" y="146.0" text-anchor="middle" font-size="11">o</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-3e7f-779e">
+<h2>0x3e7f.779e</h2>
+<p class="meta">2 args · argument slots <code>~[12 13]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 512 377" width="512" height="377" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M197.7 81.0 C 197.7 112.5, 91.1 112.5, 91.1 144.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M230.6 81.0 C 230.6 112.5, 337.2 112.5, 337.2 144.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="edge edge-z"><path d="M302.9 215.0 C 302.9 246.5, 256.1 246.5, 256.1 278.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M371.6 215.0 C 371.6 246.5, 418.4 246.5, 418.4 278.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="node">
+<rect x="193.0" y="279.0" width="126.2" height="70.0" rx="8"/>
+<text class="hdr" x="205.0" y="296.0" font-size="11">0w4</text>
+<text class="op" x="205.0" y="319.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0v4</text>
+<text class="op-exit" x="205.0" y="336.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v4</text>
+</g>
+<g class="node node-entry">
+<rect x="143.8" y="28.0" width="140.8" height="53.0" rx="8"/>
+<text class="hdr" x="155.8" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="272.6" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op-branch" x="155.8" y="68.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0v0 r=0v1</text>
+</g>
+<g class="node">
+<rect x="28.0" y="145.0" width="126.2" height="70.0" rx="8"/>
+<text class="hdr" x="40.0" y="162.0" font-size="11">0wg</text>
+<text class="op" x="40.0" y="185.0" font-size="12"><tspan class="opcode">%imm</tspan> n=1 d=0v5</text>
+<text class="op-exit" x="40.0" y="202.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v5</text>
+</g>
+<g class="node">
+<rect x="355.2" y="279.0" width="126.2" height="70.0" rx="8"/>
+<text class="hdr" x="367.2" y="296.0" font-size="11">0w5</text>
+<text class="op" x="367.2" y="319.0" font-size="12"><tspan class="opcode">%imm</tspan> n=1 d=0v3</text>
+<text class="op-exit" x="367.2" y="336.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v3</text>
+</g>
+<g class="node">
+<rect x="190.2" y="145.0" width="294.1" height="70.0" rx="8"/>
+<text class="hdr" x="202.2" y="162.0" font-size="11">0wh</text>
+<text class="op" x="202.2" y="185.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-5f3d-fa84" class="fnlink">0x5f3d.fa84</a> v=~[0v0 0v1] d=0v2</text>
+<text class="op-branch" x="202.2" y="202.0" font-size="12"><tspan class="opcode">%brn</tspan> s=0v2</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="83.0" y="116.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="91.1" y="129.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="329.1" y="116.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="337.2" y="129.0" text-anchor="middle" font-size="11">o</text></g>
+<g class="edge edge-z"><rect class="edge-chip" x="248.0" y="250.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="256.1" y="263.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="410.2" y="250.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="418.4" y="263.0" text-anchor="middle" font-size="11">o</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-3dfa-cf19">
+<h2>0x3dfa.cf19</h2>
+<p class="meta">1 arg · argument slots <code>~[6]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 452 887" width="452" height="887" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M179.9 523.0 C 179.9 554.5, 153.8 554.5, 153.8 586.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M272.4 523.0 C 272.4 554.5, 298.5 554.5, 298.5 586.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="edge edge-plain"><path d="M153.8 623.0 C 153.8 663.0, 191.8 663.0, 191.8 703.0" fill="none" marker-end="url(#arr)"/></g>
+<g class="edge edge-plain"><path d="M298.5 640.0 C 298.5 671.5, 260.5 671.5, 260.5 703.0" fill="none" marker-end="url(#arr)"/></g>
+<g class="node node-entry">
+<rect x="28.0" y="28.0" width="396.3" height="495.0" rx="8"/>
+<text class="hdr" x="40.0" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="412.3" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="40.0" y="68.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [15 3] 17 12] d=0v1</text>
+<text class="op" x="40.0" y="85.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v1</text>
+<text class="op" x="40.0" y="102.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [15 10] 15 29] d=0v2</text>
+<text class="op" x="40.0" y="119.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v2</text>
+<text class="op" x="40.0" y="136.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [15 14] 15 23] d=0v3</text>
+<text class="op" x="40.0" y="153.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v3</text>
+<text class="op" x="40.0" y="170.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0v4</text>
+<text class="op" x="40.0" y="187.0" font-size="12"><tspan class="opcode">%imm</tspan> n=1 d=0v5</text>
+<text class="op" x="40.0" y="204.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-3e7f-779e" class="fnlink">0x3e7f.779e</a> v=~[0v4 0v5] d=0v6</text>
+<text class="op" x="40.0" y="221.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v3</text>
+<text class="op" x="40.0" y="238.0" font-size="12"><tspan class="opcode">%lob</tspan> p=0v6</text>
+<text class="op" x="40.0" y="255.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v2</text>
+<text class="op" x="40.0" y="272.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [16 3] 17 12] d=0v7</text>
+<text class="op" x="40.0" y="289.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v7</text>
+<text class="op" x="40.0" y="306.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [16 10] 16 30] d=0v8</text>
+<text class="op" x="40.0" y="323.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v8</text>
+<text class="op" x="40.0" y="340.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [16 14] 16 23] d=0v9</text>
+<text class="op" x="40.0" y="357.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0v9</text>
+<text class="op" x="40.0" y="374.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-3e7f-779e" class="fnlink">0x3e7f.779e</a> v=~[0v4 0v5] d=0va</text>
+<text class="op" x="40.0" y="391.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v9</text>
+<text class="op" x="40.0" y="408.0" font-size="12"><tspan class="opcode">%lob</tspan> p=0va</text>
+<text class="op" x="40.0" y="425.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v8</text>
+<text class="op" x="40.0" y="442.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [17 3] 17 12] d=0vb</text>
+<text class="op" x="40.0" y="459.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0vb</text>
+<text class="op" x="40.0" y="476.0" font-size="12"><tspan class="opcode">%imm</tspan> n=[/gen/test-compile/hoon [17 8] 17 9] d=0vc</text>
+<text class="op" x="40.0" y="493.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%spot p=0vc</text>
+<text class="op-branch" x="40.0" y="510.0" font-size="12"><tspan class="opcode">%brn</tspan> s=0va</text>
+</g>
+<g class="node">
+<rect x="111.8" y="587.0" width="84.0" height="36.0" rx="8"/>
+<text class="hdr" x="123.8" y="604.0" font-size="11">0w~</text>
+</g>
+<g class="node">
+<rect x="231.8" y="587.0" width="133.5" height="53.0" rx="8"/>
+<text class="hdr" x="243.8" y="604.0" font-size="11">0w10</text>
+<text class="op" x="243.8" y="627.0" font-size="12"><tspan class="opcode">%imm</tspan> n=42 d=0vd</text>
+</g>
+<g class="node">
+<rect x="79.1" y="704.0" width="294.1" height="155.0" rx="8"/>
+<text class="hdr" x="91.1" y="721.0" font-size="11">0w12</text>
+<text class="op-params" x="91.1" y="744.0" font-size="12"><tspan class="opcode">params</tspan> ~[0ve]</text>
+<text class="op" x="91.1" y="761.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0vc</text>
+<text class="op" x="91.1" y="778.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-7ab8-ed5c" class="fnlink">0x7ab8.ed5c</a> v=~[0ve 0v0] d=0vf</text>
+<text class="op" x="91.1" y="795.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0vb</text>
+<text class="op" x="91.1" y="812.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v7</text>
+<text class="op" x="91.1" y="829.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%spot p=0v1</text>
+<text class="op-exit" x="91.1" y="846.0" font-size="12"><tspan class="opcode">%don</tspan> s=0vf</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="145.6" y="558.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="153.8" y="571.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="290.4" y="558.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="298.5" y="571.0" text-anchor="middle" font-size="11">o</text></g>
+<g class="edge edge-plain"><rect class="edge-chip" x="167.9" y="675.0" width="47.8" height="18" rx="4"/><text class="edge-label" x="191.8" y="688.0" text-anchor="middle" font-size="11">~[0v0]</text></g>
+<g class="edge edge-plain"><rect class="edge-chip" x="236.6" y="653.0" width="47.8" height="18" rx="4"/><text class="edge-label" x="260.5" y="666.0" text-anchor="middle" font-size="11">~[0vd]</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+<section id="fn-2eba-5d91">
+<h2>0x2eba.5d91</h2>
+<p class="meta">1 arg · argument slots <code>~[6]</code></p>
+<div class="canvas">
+<svg viewBox="0 0 620 311" width="620" height="311" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge)"/></marker>
+  <marker id="arr-z" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-z)"/></marker>
+  <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--edge-o)"/></marker>
+</defs>
+<g class="edge edge-z"><path d="M244.3 132.0 C 244.3 163.5, 197.6 163.5, 197.6 195.0" fill="none" marker-end="url(#arr-z)"/></g>
+<g class="edge edge-o"><path d="M375.9 132.0 C 375.9 163.5, 422.6 163.5, 422.6 195.0" fill="none" marker-end="url(#arr-o)"/></g>
+<g class="node node-entry">
+<rect x="28.0" y="28.0" width="564.2" height="104.0" rx="8"/>
+<text class="hdr" x="40.0" y="45.0" font-size="11">0w0</text>
+<text class="entry-tag" x="580.2" y="45.0" text-anchor="end" font-size="10">entry</text>
+<text class="op" x="40.0" y="68.0" font-size="12"><tspan class="opcode">%imm</tspan> n=2.663.495.029.034.430.894.880.199.458.246.708.989.383.632.228 d=0v1</text>
+<text class="op" x="40.0" y="85.0" font-size="12"><tspan class="opcode">%hdp</tspan> n=%mean p=0v1</text>
+<text class="op" x="40.0" y="102.0" font-size="12"><tspan class="opcode">%imm</tspan> n=0 d=0v2</text>
+<text class="op-branch" x="40.0" y="119.0" font-size="12"><tspan class="opcode">%eqq</tspan> l=0v2 r=0v0</text>
+</g>
+<g class="node">
+<rect x="155.6" y="196.0" width="84.0" height="53.0" rx="8"/>
+<text class="hdr" x="167.6" y="213.0" font-size="11">0wg</text>
+<text class="op-exit" x="167.6" y="236.0" font-size="12"><tspan class="opcode">%bom</tspan> </text>
+</g>
+<g class="node">
+<rect x="275.6" y="196.0" width="294.1" height="87.0" rx="8"/>
+<text class="hdr" x="287.6" y="213.0" font-size="11">0wh</text>
+<text class="op" x="287.6" y="236.0" font-size="12"><tspan class="opcode">%cal</tspan> a=<a href="#fn-494d-c7c0" class="fnlink">0x494d.c7c0</a> v=~[0v2 0v0] d=0v3</text>
+<text class="op" x="287.6" y="253.0" font-size="12"><tspan class="opcode">%hde</tspan> n=%mean p=0v1</text>
+<text class="op-exit" x="287.6" y="270.0" font-size="12"><tspan class="opcode">%don</tspan> s=0v3</text>
+</g>
+<g class="edge edge-z"><rect class="edge-chip" x="189.4" y="167.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="197.6" y="180.0" text-anchor="middle" font-size="11">z</text></g>
+<g class="edge edge-o"><rect class="edge-chip" x="414.5" y="167.0" width="16.3" height="18" rx="4"/><text class="edge-label" x="422.6" y="180.0" text-anchor="middle" font-size="11">o</text></g>
+</svg>
+</div>
+<div class="legend"><span><i class="swatch" style="border-color:var(--edge-z)"></i>z (yes / zero / cell)</span><span><i class="swatch" style="border-color:var(--edge-o)"></i>o (no / other)</span><span><i class="swatch" style="border-color:var(--edge)"></i>unconditional</span><span><i class="swatch" style="border-color:var(--edge);border-top-style:dashed;opacity:.55"></i>%bom fallthrough (not taken — crash)</span></div>
+</section>
+</main>
+</body>
+</html>

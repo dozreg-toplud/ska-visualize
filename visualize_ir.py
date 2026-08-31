@@ -12,6 +12,7 @@ inline SVG.  No network access, no JS dependencies -- open via file://.
 
 import argparse
 import html
+import re
 import sys
 
 # --------------------------------------------------------------------------
@@ -97,6 +98,8 @@ def parse_value(s, i):
     j = i
     while j < len(s) and s[j] not in ' ]':
         j += 1
+    if j == i:
+        raise ValueError(f'unexpected {s[i]!r} at {i}: ...{s[max(0, i - 30):i + 10]!r}')
     return s[i:j], j
 
 
@@ -108,8 +111,11 @@ def parse_block_body(body):
         if body[i] == ' ':
             i += 1
             continue
-        v, i = parse_value(body, i)
+        v, j = parse_value(body, i)
+        if j <= i:
+            raise ValueError(f'cannot parse block body at ...{body[i:i + 30]!r}')
         instrs.append(v)
+        i = j
     return instrs
 
 
@@ -309,25 +315,108 @@ def build_nodes(func):
 # Text rendering of values / instructions
 # --------------------------------------------------------------------------
 
-def fmt_value(v):
+NUM_RE = re.compile(r'^\d+(?:\.\d{3})*$')
+HINT_OPS = {'hse', 'hsp', 'hdp'}
+
+
+def try_cord(numstr):
+    """Decode a dotted decimal as little-endian printable ASCII, or None."""
+    n = int(numstr.replace('.', ''))
+    if n < 32:
+        return None
+    try:
+        t = n.to_bytes((n.bit_length() + 7) // 8, 'little').decode('ascii')
+    except UnicodeDecodeError:
+        return None
+    if all(32 <= ord(c) < 127 for c in t):
+        return t
+    return None
+
+
+def spot_regs(func):
+    """Registers whose value ends up in a %spot hint -- immediates written to
+    them are source locations and get the spot rendering."""
+    regs = set()
+    for bl in func['blocks'].values():
+        for ins in bl['instrs']:
+            if ins.get('op') in HINT_OPS and ins['fields'].get('n') == '%spot':
+                p = ins['fields'].get('p')
+                if isinstance(p, str):
+                    regs.add(p)
+    return regs
+
+
+def _sub_cords_in_opaque(s):
+    """Replace decodable dotted numbers inside a {...} brace atom, skipping
+    any number that runs into the ....-truncation marker."""
+    def repl(m):
+        if s[m.end():m.end() + 1] == '.':     # truncated digits -- don't guess
+            return m.group(0)
+        t = try_cord(m.group(0))
+        return f"'{t}'" if t else m.group(0)
+    return re.sub(r'\d+(?:\.\d{3})*', repl, s)
+
+
+def fmt_path(v):
+    """A null-terminated list of cords -> /gen/test-compile/hoon, or None."""
+    if not isinstance(v, dict) or v.get('op') or v['order']:
+        return None
+    elems = v.get('pos', [])
+    if len(elems) < 2 or elems[-1] not in ('0', []):
+        return None
+    parts = []
+    for e in elems[:-1]:
+        if not isinstance(e, str) or not NUM_RE.match(e):
+            return None
+        t = try_cord(e)
+        if t is None:
+            return None
+        parts.append(t)
+    return '/' + '/'.join(parts)
+
+
+def fmt_spot(v):
+    """Render a %spot immediate: [/gen/test-compile/hoon [13 22] 13 25].
+    Falls back to cord-or-number rendering if the shape doesn't match."""
+    if isinstance(v, dict) and not v.get('op') and not v['order'] and v.get('pos'):
+        path = fmt_path(v['pos'][0])
+        if path:
+            rest = ' '.join(fmt_value(x) for x in v['pos'][1:])
+            return f'[{path} {rest}]' if rest else f'[{path}]'
+    return fmt_value(v, cords=True)
+
+
+def fmt_value(v, cords=False):
     if isinstance(v, list):
-        return '~' if not v else '~[' + ' '.join(fmt_value(x) for x in v) + ']'
+        return '~' if not v else '~[' + ' '.join(fmt_value(x, cords) for x in v) + ']'
     if isinstance(v, dict):
         inner = []
         if v.get('op'):
             inner.append('%' + v['op'])
-        inner += [fmt_value(p) for p in v.get('pos', [])]
+        inner += [fmt_value(p, cords) for p in v.get('pos', [])]
         for k in v['order']:
-            inner.append(f'{k}={fmt_value(v["fields"][k])}')
+            inner.append(f'{k}={fmt_value(v["fields"][k], cords)}')
         return '[' + ' '.join(inner) + ']'
+    if cords:
+        if v.startswith('{'):
+            return _sub_cords_in_opaque(v)
+        if NUM_RE.match(v):
+            t = try_cord(v)
+            return f"'{t}'" if t else v
     return v
 
 
-def instr_parts(ins):
+def instr_parts(ins, spots=frozenset()):
     """Return (opcode, operand string) for a non-branch instruction."""
     op = ins.get('op') or '?'
-    ops = ' '.join(f'{k}={fmt_value(ins["fields"][k])}' for k in ins['order'])
-    return '%' + op, ops
+    parts = []
+    for k in ins['order']:
+        v = ins['fields'][k]
+        if op == 'imm' and k == 'n' and ins['fields'].get('d') in spots:
+            parts.append(f'{k}={fmt_spot(v)}')
+        else:
+            parts.append(f'{k}={fmt_value(v)}')
+    return '%' + op, ' '.join(parts)
 
 
 def branch_cond_parts(ins):
@@ -344,8 +433,11 @@ def branch_cond_parts(ins):
 
 FONT = 12          # px, monospace
 CHAR_W = 7.3       # advance estimate for 12px ui-monospace
+HDR_CW = 6.5       # advance estimate for the 11px header font
 LINE_H = 17
 HDR_H = 20
+HDR_LH = 15        # extra header (wrapped id enumeration) lines
+ENTRY_W = 46       # room reserved for the "entry" tag on the first header line
 PAD_X = 12
 PAD_Y = 8
 NODE_GAP_X = 36
@@ -353,11 +445,9 @@ LAYER_GAP = 64
 MARGIN = 28
 
 
-def node_geometry(node, entry):
+def node_geometry(node, entry, spots=frozenset()):
     ids = node['ids']
-    header = ' · '.join(ids)
-    if ids[0] == entry:
-        header += '   entry'
+    is_entry = ids[0] == entry
     lines = []          # (opcode, operands, kind)
     if node['params']:
         lines.append(('params', fmt_value(node['params']), 'params'))
@@ -374,18 +464,35 @@ def node_geometry(node, entry):
             if op == 'bom' and unit_jmp_target(ins['fields'].get('o')):
                 oc, rest = branch_cond_parts(ins)   # edge carries the target
             else:
-                oc, rest = instr_parts(ins)
+                oc, rest = instr_parts(ins, spots)
             lines.append((oc, rest, 'exit'))
         else:
-            oc, rest = instr_parts(ins)
+            oc, rest = instr_parts(ins, spots)
             lines.append((oc, rest, 'plain'))
-    text_w = max([len(header) * (CHAR_W - 0.8) + 40] +
-                 [(len(oc) + 1 + len(rest)) * CHAR_W for oc, rest, _ in lines])
-    w = max(84, text_w + 2 * PAD_X)
-    h = HDR_H + max(len(lines), 0) * LINE_H + 2 * PAD_Y
-    if not lines:
-        h = HDR_H + 2 * PAD_Y
-    return header, lines, w, h
+    code_w = max([(len(oc) + 1 + len(rest)) * CHAR_W for oc, rest, _ in lines],
+                 default=0)
+    # wrap the id enumeration so it never widens the box past the code;
+    # floor keeps code-less nodes from wrapping one id per line
+    target_w = max(code_w, 150,
+                   max(len(i) for i in ids) * HDR_CW + (ENTRY_W if is_entry else 0))
+    header_lines = []
+    cur = ''
+    for i in ids:
+        cand = i if not cur else cur + ' · ' + i
+        budget = target_w - (ENTRY_W if is_entry and not header_lines else 0)
+        if cur and len(cand) * HDR_CW > budget:
+            header_lines.append(cur)
+            cur = i
+        else:
+            cur = cand
+    header_lines.append(cur)
+    hdr_w = max(len(hl) * HDR_CW for hl in header_lines)
+    if is_entry:
+        hdr_w = max(hdr_w, len(header_lines[0]) * HDR_CW + ENTRY_W)
+    w = max(84, max(code_w, hdr_w) + 2 * PAD_X)
+    h = (HDR_H + HDR_LH * (len(header_lines) - 1)
+         + len(lines) * LINE_H + 2 * PAD_Y)
+    return header_lines, lines, w, h
 
 
 def layer_nodes(nodes, edges, entry):
@@ -547,7 +654,8 @@ def esc(s):
 def render_function(func, known_tags):
     entry = '0w0'
     nodes, edges = build_nodes(func)
-    geo = {b: node_geometry(n, entry) for b, n in nodes.items()}
+    spots = spot_regs(func)
+    geo = {b: node_geometry(n, entry, spots) for b, n in nodes.items()}
     sizes = {b: (g[2], g[3]) for b, g in geo.items()}
     layers, gsucc, gpred, chains, layer = layer_nodes(nodes, edges, entry)
     for chain in chains.values():
@@ -636,19 +744,21 @@ def render_function(func, known_tags):
 
     # nodes
     for b in nodes:
-        header, lines, w, h = geo[b]
+        header_lines, lines, w, h = geo[b]
         nx = x[b] - w / 2
         ny = y[b]
         is_entry = nodes[b]['ids'][0] == entry
         svg.append(f'<g class="node{" node-entry" if is_entry else ""}">')
         svg.append(f'<rect x="{nx:.1f}" y="{ny:.1f}" width="{w:.1f}" height="{h:.1f}" rx="8"/>')
-        hdr_ids = ' · '.join(nodes[b]['ids'])
-        svg.append(f'<text class="hdr" x="{nx + PAD_X:.1f}" y="{ny + PAD_Y + 9:.1f}" '
-                   f'font-size="11">{esc(hdr_ids)}</text>')
+        hy = ny + PAD_Y + 9
+        for hl in header_lines:
+            svg.append(f'<text class="hdr" x="{nx + PAD_X:.1f}" y="{hy:.1f}" '
+                       f'font-size="11">{esc(hl)}</text>')
+            hy += HDR_LH
         if is_entry:
             svg.append(f'<text class="entry-tag" x="{nx + w - PAD_X:.1f}" y="{ny + PAD_Y + 9:.1f}" '
                        f'text-anchor="end" font-size="10">entry</text>')
-        ty = ny + HDR_H + PAD_Y + 12
+        ty = hy - HDR_LH + 23   # first code baseline, 23px under last header line
         for oc, rest, kind in lines:
             cls = {'branch': 'op-branch', 'exit': 'op-exit', 'params': 'op-params'}.get(kind, 'op')
             body = esc(rest)
