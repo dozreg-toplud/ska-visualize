@@ -14,6 +14,7 @@ import argparse
 import html
 import re
 import sys
+from collections import deque
 
 # --------------------------------------------------------------------------
 # Parsing
@@ -270,38 +271,46 @@ def build_nodes(func):
     edges: [(src_node, dst_node, args, label)]
     """
     blocks = func['blocks']
-    nodes = {b: {'ids': [b], 'instrs': list(bl['instrs']), 'params': list(bl['params'])}
-             for b, bl in blocks.items()}
+    pred_count = {b: 0 for b in blocks}
+    for b, bl in blocks.items():
+        for t, _a, _l in successors(bl['instrs']):
+            if t in pred_count:
+                pred_count[t] += 1
 
-    def preds_of():
-        p = {b: [] for b in nodes}
-        for b, n in nodes.items():
-            for t, _a, _l in successors(n['instrs']):
-                if t in p:
-                    p[t].append(b)
-        return p
+    def merge_next(b):
+        """Target b's empty-args %hop chain-merges into, or None."""
+        ins = blocks[b]['instrs']
+        if not ins or ins[-1].get('op') != 'hop':
+            return None
+        t, args = jmp_target(ins[-1]['fields']['t'])
+        if (not args and t != b and t in blocks
+                and pred_count[t] == 1 and not blocks[t]['params']):
+            return t
+        return None
 
-    changed = True
-    while changed:
-        changed = False
-        preds = preds_of()
-        for a in list(nodes):
-            if a not in nodes:
-                continue
-            n = nodes[a]
-            succ = successors(n['instrs'])
-            if len(succ) != 1:
-                continue
-            t, args, _ = succ[0]
-            if n['instrs'][-1].get('op') != 'hop' or args or t == a or t not in nodes:
-                continue
-            if preds.get(t) != [a] or nodes[t]['params']:
-                continue
-            tgt = nodes.pop(t)
-            n['instrs'] = n['instrs'][:-1] + tgt['instrs']
-            n['ids'] = n['ids'] + tgt['ids']
-            changed = True
-            break
+    # chain heads are blocks nothing merges into; walk each chain once
+    merge_targets = {t for b in blocks if (t := merge_next(b))}
+    nodes = {}
+    assigned = set()
+    for b in blocks:
+        if b in merge_targets:
+            continue
+        ids = [b]
+        instrs = []
+        cur = b
+        t = merge_next(cur)
+        while t:
+            instrs.extend(blocks[cur]['instrs'][:-1])   # drop the hop
+            ids.append(t)
+            cur = t
+            t = merge_next(cur)
+        instrs.extend(blocks[cur]['instrs'])
+        nodes[b] = {'ids': ids, 'instrs': instrs, 'params': list(blocks[b]['params'])}
+        assigned.update(ids)
+    for b in blocks:            # safety net for hop cycles: emit unmerged
+        if b not in assigned:
+            nodes[b] = {'ids': [b], 'instrs': list(blocks[b]['instrs']),
+                        'params': list(blocks[b]['params'])}
 
     edges = []
     for b, n in nodes.items():
@@ -513,9 +522,9 @@ def layer_nodes(nodes, edges, entry):
     indeg = {b: len(preds[b]) for b in nodes}
     layer = {b: 0 for b in nodes}
     topo = []
-    q = [b for b in nodes if indeg[b] == 0]
+    q = deque(b for b in nodes if indeg[b] == 0)
     while q:
-        b = q.pop(0)
+        b = q.popleft()
         topo.append(b)
         for t in succs[b]:
             layer[t] = max(layer[t], layer[b] + 1)
@@ -551,17 +560,20 @@ def layer_nodes(nodes, edges, entry):
 
     nlayers = max(layer.values(), default=0) + 1
     layers = [[] for _ in range(nlayers)]
-    # deterministic initial order: DFS from entry
+    # deterministic initial order: iterative DFS from entry (chains can be
+    # thousands of blocks deep -- no recursion)
     seen = set()
     order = []
 
-    def dfs(b):
-        if b in seen:
-            return
-        seen.add(b)
-        order.append(b)
-        for t in gsucc[b]:
-            dfs(t)
+    def dfs(root):
+        stack = [root]
+        while stack:
+            b = stack.pop()
+            if b in seen:
+                continue
+            seen.add(b)
+            order.append(b)
+            stack.extend(reversed(gsucc[b]))
 
     if entry in nodes:
         dfs(entry)
