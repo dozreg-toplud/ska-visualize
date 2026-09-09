@@ -219,13 +219,29 @@ def parse_ir(text):
 # CFG construction and hop-chain merging
 # --------------------------------------------------------------------------
 
-BRANCH_OPS = {'clq', 'eqq', 'brn'}
+BRANCH_OPS = {'clq', 'eqq', 'brn', 'brz'}
 EXIT_OPS = {'jmp', 'jmf', 'jsp', 'jsf', 'don', 'bom'}
 
 
+def unit_reg(v):
+    """A (unit @uvre) as printed: `~` (parsed as []) for none, `[~ 0vX]` for
+    some. Returns the register or None."""
+    if isinstance(v, dict):
+        for p in v.get('pos', []):
+            if isinstance(p, str):
+                return p
+    return None
+
+
 def jmp_target(v):
-    """A 'jmp' struct in the type sense: [args=... there=0wX]."""
-    return v['fields']['there'], v['fields'].get('args') or []
+    """A 'jmp' struct in the type sense: [args=... there=0wX].
+    args is a list of (unit @uvre): None where the edge supplies nothing to
+    that parameter (the parameter is never read on that path)."""
+    return v['fields']['there'], [unit_reg(a) for a in (v['fields'].get('args') or [])]
+
+
+def fmt_args(args):
+    return '~[' + ' '.join('~' if a is None else a for a in args) + ']'
 
 
 def unit_jmp_target(v):
@@ -744,7 +760,7 @@ def render_function(func, known_tags):
                    f'marker-end="url(#{marker})"/></g>')
         text = '' if label == 'bom' else label   # the dash pattern says "crash path"
         if args:
-            text = (label + ' ' if label else '') + fmt_value(args)
+            text = (label + ' ' if label else '') + fmt_args(args)
         if text:
             rank = label_rank.get(d, 0)
             label_rank[d] = rank + 1

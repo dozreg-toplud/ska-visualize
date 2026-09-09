@@ -13,7 +13,7 @@ STATE_CAP = 20_000_000
 
 def branch_key(term):
     op = term.get('op')
-    if op == 'brn': return ('brn', term['fields']['s'])
+    if op in ('brn', 'brz'): return (op, term['fields']['s'])
     if op == 'clq': return ('clq', term['fields']['s'])
     if op == 'eqq': return ('eqq', term['fields']['l'], term['fields']['r'])
     return None
@@ -106,7 +106,7 @@ def run(path, name):
     print(f'== {name}')
     any_flag = False
     for f in funcs:
-        viols, _multi, _n = check_function(f)
+        viols, _multi, _n, _shape = check_function(f)
         flagged = {(b, r) for b, _k, _op, _fld, r, _kind in viols}
         if not flagged: continue
         any_flag = True

@@ -10,6 +10,10 @@ is dominated by its definition. Definitions are instructions with a `d` field,
 block params, and function arguments (0v0 .. 0v<arity-1> at entry). Also flags
 registers defined more than once (not SSA) and uses of never-defined registers.
 
+Jump arguments are (unit @uvre): a `~` slot supplies nothing to its parameter,
+which is then defined but never read on that path. Filled slots are uses like
+any other. Every edge must pass exactly one slot per parameter of its target.
+
 Exit status: 0 if clean, 1 if any violation found.
 """
 
@@ -46,17 +50,22 @@ def atoms(v):
 
 
 def check_function(f):
-    """Return (violations, multi_def_regs, n_reachable).
+    """Return (violations, multi_def_regs, n_reachable, shape_errors).
 
     violations: [(block, instr_index, op, field, reg, kind)] where kind is
     'undefined' (no def anywhere) or 'not-dominated'.
+    shape_errors: [(block, target, n_args, n_params)] for edges whose argument
+    count does not match the target's parameter count.
     """
     blocks = f['blocks']
     succ = {b: [] for b in blocks}
+    shape_errors = []
     for b, blk in blocks.items():
-        for t, _a, lab in vz.successors(blk['instrs']):
+        for t, args, lab in vz.successors(blk['instrs']):
             if t in blocks and lab != 'bom':    # crashes don't flow
                 succ[b].append(t)
+            if t in blocks and len(args) != len(blocks[t]['params']):
+                shape_errors.append((b, t, len(args), len(blocks[t]['params'])))
     pred = {b: [] for b in blocks}
     for b, ts in succ.items():
         for t in ts:
@@ -156,7 +165,7 @@ def check_function(f):
                         violations.append((b, k, ins.get('op'), key, a, kind))
     multi = sorted(r for r, ds in defs.items()
                    if len([d for d in ds if d != ('0w0', -1)]) > 1)
-    return violations, multi, len(seen)
+    return violations, multi, len(seen), shape_errors
 
 
 def main():
@@ -168,13 +177,15 @@ def main():
     for f in funcs:
         if only and f['tag'] not in only:
             continue
-        violations, multi, nreach = check_function(f)
-        if not violations and not multi:
+        violations, multi, nreach, shape = check_function(f)
+        if not violations and not multi and not shape:
             continue
         bad += 1
         print(f"{f['tag']} ({len(f['blocks'])} blocks, {nreach} reachable):")
         if multi:
             print(f"  NOT SSA -- multiple defs: {' '.join(multi)}")
+        for b, t, na, np_ in shape:
+            print(f"  edge {b} -> {t} passes {na} args to {np_} params")
         by_reg = {}
         for v in violations:
             by_reg.setdefault(v[4], []).append(v)
@@ -184,7 +195,8 @@ def main():
             more = f' (+{len(vs) - 8} more)' if len(vs) > 8 else ''
             print(f"  {reg}: {len(vs)} bad use(s) [{vs[0][5]}] at {where}{more}")
     if bad == 0:
-        print('clean: every use dominated by its definition, all regs single-def')
+        print('clean: every use dominated by its definition, all regs single-def, '
+              'edges match params')
     sys.exit(1 if bad else 0)
 
 
